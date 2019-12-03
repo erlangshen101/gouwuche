@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,
+    maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>购物车</title>
+    <!-- 引入vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <!-- 适配移动端 -->
+    <script src="http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js"></script>
+    <!-- 初始化默认样式 -->
+    <link rel="stylesheet" href="./reset.css">
+    <!-- 用于适配ipad以及ipad pro -->
+    <script>
+        if (/(iPad|iPod)/i.test(navigator.userAgent)) {
+            ;/(iPhone|iPad|iPhone OS|Phone|iPod|iOS)/i.test(navigator.userAgent) &&
+          ((head = document.getElementsByTagName('head')),
+          (viewport = document.createElement('meta')),
+          (viewport.name = 'viewport'),
+          (viewport.content =
+            'target-densitydpi=device-dpi, width=480px, user-scalable=no'),
+          head.length > 0 && head[head.length - 1].appendChild(viewport))
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 头部 -->
+        <header class="header">
+            <div class="header-title">
+                <img src="./images/return.png" alt="">
+                <h2>购物车</h2>
+            </div>
+        </header>
+        <!-- 文档中的区段 -->
+        <section>
+            <header class="edit">
+                <span>编辑</span>
+            </header>
+            <!-- 商品 -->
+            <article class="commodity-list">
+                <ul v-for="val,i in commodity">
+                    <!-- 标题 -->
+                    <li class="commodity-title">
+                        <div>
+                            <img :src="val.ico" alt="" class="commodity-btn" @click="Choice('quan',i)">
+                            <img src="./images/storeicon.png" alt="" class="commodity-icon">
+                            <h2>{{val.title}}</h2>
+                        </div>
+                    </li>
+                    <!-- 商品 -->
+                    <li class="commodity-box" v-for="item,index in val.box">
+                        <div class="commodity-left">
+                            <img :src="item.icon" alt="" class="commodity-btn" @click="Choice(index,i)">
+                            <img :src="item.image" alt="" class="left-img">
+                        </div>
+                        <div class="commodity-right">
+                            <p>{{item.tle}}</p>
+                            <div class="right-Number">
+                                <div class="right-Price">
+                                    <span>{{item.price}}</span>
+                                    <s>{{item.shan}}</s>
+                                </div>
+                                <div class="right-Calculation">
+                                    <img src="./images/reducey.png" alt="" @click="Calculation(index,i,'-')">
+                                    <input type="number" :value=item.num>
+                                    <img src="./images/add.png" alt="" @click="Calculation(index,i,'+')">
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+        </section>
+        <!-- 底部 结算 -->
+        <footer class="footer">
+            <div class="All">
+                <img :src="img" alt="" @click="sss" class="commodity-btn">
+                <span>全选</span>
+            </div>
+            <div class="payment">
+                支付: <span>{{hej}}</span>
+            </div>
+            <div class="bill">
+                结算({{ohj}})
+            </div>
+        </footer>
+    </div>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                sos: false,
+                img: "./images/radioiconn.png",
+                commodity: [
+                    {
+                        title: "平台自营",
+                        ico: "./images/radioiconn.png",
+                        All: false,
+                        box:[
+                            {
+                                icon: "./images/radioiconn.png",
+                                image: "./images/pic02.jpg",
+                                tle: "贝智康花冠高阶3段配方乳粉 900gX2罐12-36月",
+                                price: "596",
+                                shan: "￥ 50",
+                                num: 1,
+                                Selection: false
+                            },
+                            {
+                                icon: "./images/radioiconn.png",
+                                image: "./images/pic01.jpg",
+                                tle: "贝智康花冠高阶3段配方乳粉 900gX2罐12-36月",
+                                price: "596",
+                                shan: "￥ 60",
+                                num: 1,
+                                Selection: false
+
+                            },
+                            {
+                                icon: "./images/radioiconn.png",
+                                image: "./images/pic02.jpg",
+                                tle: "贝智康花冠高阶3段配方乳粉 900gX2罐12-36月",
+                                price: "596",
+                                shan: "￥ 70",
+                                num: 1,
+                                Selection: false
+                            }
+                        ]
+                    },
+                    {
+                        title: "平台自营",
+                        ico: "./images/radioiconn.png",
+                        All: false,
+                        box:[
+                            {
+                                icon: "./images/radioiconn.png",
+                                image: "./images/pic02.jpg",
+                                tle: "贝智康花冠高阶3段配方乳粉 900gX2罐12-36月",
+                                price: "596",
+                                shan: "￥ 78",
+                                num: 1,
+                                Selection: false
+                            },
+                            {
+                                icon: "./images/radioiconn.png",
+                                image: "./images/pic01.jpg",
+                                tle: "贝智康花冠高阶3段配方乳粉 900gX2罐12-36月",
+                                price: "596",
+                                shan: "￥ 78",
+                                num: 1,
+                                Selection: false
+                            },
+                        ]
+                    }
+                ]
+            }
+        },
+        methods: {
+            Calculation (index,i,a) {
+                if (a == "+") {
+                    // 加
+                    this.commodity[i].box[index].num ++
+                } else {
+                    // 减
+                    if (this.commodity[i].box[index].num == 1) {
+                        this.commodity[i].box[index].num = 1
+                    } else {
+                        this.commodity[i].box[index].num --
+                    }
+                }
+            },
+            Choice (index,i) {
+                // 全选
+                if (index == 'quan') {
+                    if (this.commodity[i].All == false) {
+                        this.commodity[i].ico = "./images/radioicony.png"
+                        this.commodity[i].All = true
+                        this.commodity[i].box.forEach (val => {
+                            val.icon = "./images/radioicony.png"
+                            val.Selection = true
+                        })
+                    }else {
+                        this.commodity[i].All = false
+                        this.commodity[i].ico = "./images/radioiconn.png"
+                        this.commodity[i].box.forEach (val => {
+                            val.icon = "./images/radioiconn.png"
+                            val.Selection = false
+                        })
+                    }
+
+                    this.kele()
+
+
+
+                } else {
+                    // 单选
+                    if (this.commodity[i].box[index].Selection == false) {
+                        this.commodity[i].box[index].Selection = true
+                        this.commodity[i].box[index].icon = "./images/radioicony.png"
+                        let a = this.commodity[i].box.length
+                        var b = 0
+                        this.commodity[i].box.forEach (val => {
+                            if(val.Selection == true)  {
+                                b ++
+                                if (a == b) {
+                                    this.commodity[i].ico = "./images/radioicony.png"
+                                    this.commodity[i].All = true
+                                    this.kele()
+                                } else {
+                                    this.commodity[i].ico = "./images/radioiconn.png"
+                                    this.commodity[i].All = false
+                                    this.kele()
+                                }
+                            }
+                        })
+                    } else {
+                        this.commodity[i].box[index].icon = "./images/radioiconn.png"
+                        this.commodity[i].box[index].Selection = false
+                        let a = this.commodity[i].box.length
+                        var b = 0
+                        this.commodity[i].box.forEach (val => {
+                            if(val.Selection == true)  {
+                                b ++
+                                if (a !== b) {
+                                    this.commodity[i].ico = "./images/radioiconn.png"
+                                    this.commodity[i].All = false
+                                } 
+                            }
+                        })
+                        this.kele()
+                    }
+                }
+            },
+            sss () {
+                if (this.sos !== true) {
+                    this.sos = true
+                    this.img = "./images/radioicony.png"
+                    this.commodity.forEach (val => {
+                        val.All = true
+                        val.ico = "./images/radioicony.png"
+                        val.box.forEach (item => {
+                            item.icon = "./images/radioicony.png"
+                            item.Selection = true
+                        })
+                    })
+                } else {
+                    this.sos = false
+                    this.img = "./images/radioiconn.png"
+                    this.commodity.forEach (val => {
+                        val.All = false
+                        val.ico = "./images/radioiconn.png"
+                        val.box.forEach (item => {
+                            item.icon = "./images/radioiconn.png"
+                            item.Selection = false
+                        })
+                    })
+                }
+            },
+            kele () {
+                var ap = this.commodity.length
+                    var en = 0
+                    this.commodity.forEach (val => {
+                        if (val.All) {
+                            en ++
+                        }
+                    })
+                    if (ap == en) {
+                        this.img = "./images/radioicony.png"
+                        this.sos = true
+                    } else {
+                        this.img = "./images/radioiconn.png"
+                        this.sos = false
+                }
+            }
+        },
+        computed: {
+            hej () {
+                let sss = 0;
+                this.commodity.forEach(val => {
+                    val.box.forEach (item => {
+                        if (item.Selection) {
+                            var s = item.price * item.num
+                            sss += s
+                        }
+                    })
+                })
+                return sss
+            },
+            ohj () {
+                let sss = 0;
+                this.commodity.forEach(val => {
+                    val.box.forEach (item => {
+                        if (item.Selection) {
+                            sss += item.num
+                        }
+                    })
+                })
+                return sss
+            }
+        }
+    })
+</script>
+
+<style>
+    .header {
+        width: 100%;
+        height: 1.16rem;
+        background: #182987;
+        padding-top: .37333333rem;
+        box-sizing: border-box;
+    }
+    .header-title img{
+        width: .32rem;
+        height: .48rem;
+        margin-left: .4rem;
+        vertical-align:middle;
+        margin-top: 1px;
+    }
+    .header-title h2 {
+        display: inline-block;
+        font-size: .48rem;
+        color: #fff;
+        font-weight: 500;
+        vertical-align:middle;
+        margin-left: 3.626667rem;
+    }
+    section {
+        background: #f7f7f7;
+        padding: 0 .4rem;
+        margin-bottom: 1.6rem;
+    }
+    section .edit {
+        font-size: .4rem;
+        height: 1.066667rem;
+        text-align: right;
+        padding-bottom: .306667rem;
+        padding-top: .373333rem;
+        box-sizing: border-box;
+    }
+    .edit span {
+        font-size: .4rem;
+        color: #182987;
+        font-weight: 500;
+    }
+    .commodity-list ul {
+        padding: .4rem .266667rem 0 .266667rem;
+        background: #fff;
+        border-radius:8px;
+        margin-bottom: .533333rem;
+    }
+    .commodity-title {
+        height: .586667rem;
+    }
+    .commodity-btn {
+        width: .533333rem;
+        height: .533333rem;
+        vertical-align:middle;
+    }
+    .commodity-icon {
+        width: .426667rem;
+        height: .506667rem;
+        vertical-align:middle;
+        margin-left: .146667rem;
+    }
+    .commodity-title h2 {
+        display: inline;
+        font-size: .41667rem;
+        color: #2f2f2f;
+        font-weight: 700;
+        vertical-align:middle;
+        margin-left: .0599rem;
+    }
+    .commodity-box {
+        width: 100%;
+        height: 3.466667rem;
+        display: flex;
+        padding-top: .4rem ;
+        padding-bottom: .53333333rem ;
+        box-sizing: border-box;
+    }
+    .commodity-left {
+        width: 3.106667rem;
+        height: 100%;
+    }
+    .commodity-right {
+        width: 5.026667rem;
+        height: 100%;
+        margin-left: .66666667rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between
+    }
+    .left-img {
+        width: 2.40066667rem;
+        height: 100%;
+        vertical-align:middle;
+    }
+    .commodity-right p {
+        width:4.73333333rem;
+        font-size: .37333333rem;
+        font-weight: 700;
+        height: .88rem;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-break: break-all;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        line-height: .45rem;
+    }
+    .right-Calculation input {
+        width: 1.09333333rem;
+        height: .66666667rem;
+        border-radius:3px;
+        outline: none;
+        border: none;
+        background: #eeeeee;
+        text-align: center;
+        margin: 0 .06rem;
+    }
+    .right-Number {
+        display: flex;
+        justify-content: space-between
+    }
+    .right-Calculation img {
+        width: .33333333rem;
+        height: .33333333rem;
+        vertical-align: middle;
+    }
+    .right-Price {
+        padding-top: .08666667rem;
+        box-sizing: border-box;
+    }
+    .right-Price span{
+        font-size: .45333333rem;
+        color: #b48278;
+        font-weight: 700;
+    }
+    .right-Price s{
+        font-size: .34666667rem;
+        color: #cccccc;
+    }
+    .footer {
+        height: 1.6rem;
+        background: #fff;
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        padding: 0 .4rem;
+        display: flex;
+        align-items: center;
+    }
+    .All span {
+        font-size: .37333333rem;
+        vertical-align: middle;
+    }
+    .payment {
+        width: 3.09333333rem;
+        margin-left: 1.81333333rem;
+    }
+    .payment {
+        font-size: .42666667rem;
+    }
+    .bill {
+        width: 2.90666667rem;
+        height: 1.14666667rem;
+        text-align: center;
+        line-height:1.14666667rem;
+        background-image:url("./images/btn.png");
+        background-repeat:no-repeat;
+        background-size:2.90666667rem 1.14666667rem;
+    }
+</style>
+
+</html>
